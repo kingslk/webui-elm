@@ -46,8 +46,8 @@
                 </div>
                 <div class="price">
                   <!-- span不加回车中间没有间距 -->
-                  <span class="now">￥{{ food.price }}</span
-                  ><span class="old" v-show="food.oldPrice"
+                  <span class="now">￥{{ food.price }}</span>
+                  <span class="old" v-show="food.oldPrice"
                     >￥{{ food.oldPrice }}</span
                   >
                 </div>
@@ -57,18 +57,26 @@
         </li>
       </ul>
     </div>
+    <shopcart
+      :delivery-price="seller.deliveryPrice"
+      :min-price="seller.minPrice"
+    ></shopcart>
   </div>
 </template>
 <script type='text/ecmascript-6'>
 // 滚动组件
 import BScroll from 'better-scroll';
+import shopcart from '../shopcart/shopcart';
+
 const ERR_OK = 0;
+
 export default {
   props: {
     seller: {
       type: Object
     }
   },
+  components: { shopcart },
   data () {
     return {
       goods: [],
@@ -108,9 +116,9 @@ export default {
     // 点击滚动
     selectMenu (index) {
       // vue2.0不需要判断是浏览器还是手机端
-      // if (!event._constructed) {
-      //   return;
-      // }
+      if (!event._constructed) {
+        return;
+      }
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(
         'food-list-hook'
       );
@@ -241,7 +249,8 @@ export default {
     .food-item {
       display: flex;
       margin: 18px;
-      padding-bottom: 18px;
+      // ?????
+      padding-bottom: 22px;
       border-1px(rgba(7, 17, 27, 0.1));
 
       &:last-child {
