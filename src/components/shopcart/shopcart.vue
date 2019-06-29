@@ -20,6 +20,20 @@
         <div class="pay" :class="payClass">{{ payDesc }}</div>
       </div>
     </div>
+    <div class="ball-container">
+      <div v-for="(ball, index) in balls" :key="index">
+        <transition
+          name="drop"
+          @before-enter="beforeEnter"
+          @enter="enter"
+          @after-enter="afterEnter"
+        >
+          <div class="ball" v-show="ball.show">
+            <div class="inner inner_hook"></div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -29,7 +43,7 @@ export default {
     selectFoods: {
       type: Array,
       default () {
-        return [{ price: 10, count: 1 }];
+        return [{ price: 0, count: 0 }];
       }
     },
     deliveryPrice: {
@@ -40,6 +54,18 @@ export default {
       type: Number,
       default: 0
     }
+  },
+  data () {
+    return {
+      balls: [
+        { show: false, index: 0 },
+        { show: false, index: 1 },
+        { show: false, index: 2 },
+        { show: false, index: 3 },
+        { show: false, index: 4 }
+      ],
+      dropBalls: []
+    };
   },
   computed: {
     totalPrice () {
@@ -71,6 +97,57 @@ export default {
         return 'not-enough';
       } else {
         return 'enough';
+      }
+    }
+  },
+  methods: {
+    drop (el) {
+      for (let i = 0; i < this.balls.length; i++) {
+        let ball = this.balls[i];
+        if (!ball.show) {
+          ball.show = true;
+          ball.el = el;
+          this.dropBalls.push(ball);
+          return;
+        }
+      }
+    },
+    // 三个钩子函数使用v-on监听
+    beforeEnter (el) {
+      // 找到所以设为true的小球
+      let count = this.balls.length;
+      while (count--) {
+        let ball = this.balls[count];
+        if (ball.show) {
+          let pos = ball.el.getBoundingClientRect(); // 返回元素相对于视口偏移的位置
+          let x = pos.left - 32; // 点击的按钮与小球（fixed）之间x方向的差值
+          let y = -(window.innerHeight - pos.top - 22);
+          el.style.display = ''; // 设置初始位置前，手动置空，覆盖之前的display：none，使其显示
+          el.style.webkitTransform = `translate3d(0,${y}px,0)`; // 外层元素做纵向的动画，y是变量
+          el.style.transform = `translate3d(0,${y}px,0)`;
+          let inner = el.getElementsByClassName('inner_hook')[0]; // 内层元素做横向动画,inner-hook（用于js选择的样式名加上-hook，表明只是用                                   //于js选择的，没有真实的样式含义）
+          inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+          inner.style.transform = `translate3d(${x}px,0,0)`;
+        }
+      }
+    },
+    enter (el) {
+      /* eslint-disable no-unused-vars */
+      let rf = el.offsetHeight;
+      this.$nextTick(() => {
+        // 异步执行
+        el.style.webkitTransform = 'translate3d(0,0,0)'; // 重置回来
+        el.style.transform = 'translate3d(0,0,0)';
+        let inner = el.getElementsByClassName('inner_hook')[0];
+        inner.style.webkitTransform = 'translate3d(0,0,0)';
+        inner.style.transform = 'translate3d(0,0,0)';
+      });
+    },
+    afterEnter (el) {
+      let ball = this.dropBalls.shift(); // 取到做完动画的球，再置为false，即重置，它还可以接着被利用
+      if (ball) {
+        ball.show = false;
+        el.style.display = 'none';
       }
     }
   }
@@ -193,6 +270,28 @@ export default {
         &.enough {
           background: #00b43c;
           color: #fff;
+        }
+      }
+    }
+  }
+
+  .ball-container {
+    .ball {
+      position: fixed;
+      left: 32px;
+      bottom: 22px;
+      z-index: 200;
+      transition: all 0.4s;
+
+      &.drop-enter, &.drop-enter-active {
+        transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
+
+        .inner {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgb(0, 160, 220);
+          transition: all 0.4s linear;
         }
       }
     }

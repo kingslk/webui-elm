@@ -51,15 +51,25 @@
                     >￥{{ food.oldPrice }}</span
                   >
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <!-- Vue2.0使用v-on代替$dispatch -->
+                  <cartcontrol
+                    :food="food"
+                    v-on:cart-add="cartAdd"
+                  ></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
+    <!-- 联动购物车与商品 -->
     <shopcart
+      ref="shopCart"
       :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice"
+      :select-foods="selectFoods"
     ></shopcart>
   </div>
 </template>
@@ -67,6 +77,7 @@
 // 滚动组件
 import BScroll from 'better-scroll';
 import shopcart from '../shopcart/shopcart';
+import cartcontrol from '../cartcontrol/cartcontrol';
 
 const ERR_OK = 0;
 
@@ -76,7 +87,7 @@ export default {
       type: Object
     }
   },
-  components: { shopcart },
+  components: { shopcart, cartcontrol },
   data () {
     return {
       goods: [],
@@ -110,6 +121,20 @@ export default {
         }
       }
       return 0;
+    },
+    // 选中的食物
+    selectFoods () {
+      let foods = [];
+      // 分类
+      this.goods.forEach(good => {
+        // 食物
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
   methods: {
@@ -134,7 +159,8 @@ export default {
       });
       this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
         // 监听滚动用3
-        probeType: 3
+        probeType: 3,
+        click: true
       });
       // 获取实时滚动高度
       this.foodScroll.on('scroll', pos => {
@@ -154,6 +180,12 @@ export default {
         height += item.clientHeight;
         this.listHeight.push(height);
       }
+    },
+    // ref可调用shopcart中的方法
+    cartAdd (el) {
+      this.$nextTick(() => {
+        this.$refs.shopCart.drop(el);
+      });
     }
   }
 };
@@ -306,6 +338,12 @@ export default {
             font-size: 10px;
             color: rgb(147, 153, 159);
           }
+        }
+
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 12px;
         }
       }
     }

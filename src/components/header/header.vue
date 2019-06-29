@@ -70,7 +70,7 @@
             <div class="bulletin">
               <p class="content">{{ seller.bulletin }}</p>
             </div>
-          </div>
+          </div>icon-keyboard_arrow_right
         </div>
         <div class="detail-close" @click="hideDetail">
           <i class="icon-close"></i>
