@@ -33,6 +33,7 @@
               v-for="(food, index) in item.foods"
               :key="index"
               class="food-item border-1px"
+              @click="selectFood(food)"
             >
               <div class="icon">
                 <img :src="food.icon" width="57" />
@@ -70,7 +71,10 @@
       :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice"
       :select-foods="selectFoods"
+      v-on:cart-add="cartAdd"
     ></shopcart>
+    <!-- 食物详情覆盖层 -->
+    <food :food="selectedFood" ref="food" v-on:cart-add="cartAdd"></food>
   </div>
 </template>
 <script type='text/ecmascript-6'>
@@ -78,6 +82,7 @@
 import BScroll from 'better-scroll';
 import shopcart from '../shopcart/shopcart';
 import cartcontrol from '../cartcontrol/cartcontrol';
+import food from '../food/food';
 
 const ERR_OK = 0;
 
@@ -87,12 +92,13 @@ export default {
       type: Object
     }
   },
-  components: { shopcart, cartcontrol },
+  components: { shopcart, cartcontrol, food },
   data () {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectedFood: {}
     };
   },
   created () {
@@ -150,6 +156,10 @@ export default {
       let el = foodList[index];
       // 滚动到某个元素
       this.foodScroll.scrollToElement(el, 300);
+    },
+    selectFood (food) {
+      this.selectedFood = food;
+      this.$refs.food.show();
     },
     _initScroll () {
       // 监听ref的滚动
