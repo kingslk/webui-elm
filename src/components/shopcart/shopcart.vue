@@ -55,7 +55,7 @@
                 <div class="cartcontrol-wrapper">
                   <cartcontrol
                     :food="food"
-                    v-on:cart-add="ballShow"
+                    v-on:cartadd="ballShow"
                   ></cartcontrol>
                 </div>
               </li>
@@ -226,7 +226,7 @@ export default {
       this.fold = true;
     },
     ballShow () {
-      this.$emit('cart-add', event.target);
+      this.$emit('cartadd', event.target);
     },
     pay () {
       if (this.totalPrice < this.minPrice) {

@@ -67,10 +67,11 @@
               <div class="text">商家公告</div>
               <div class="line"></div>
             </div>
+
             <div class="bulletin">
               <p class="content">{{ seller.bulletin }}</p>
             </div>
-          </div>icon-keyboard_arrow_right
+          </div>
         </div>
         <div class="detail-close" @click="hideDetail">
           <i class="icon-close"></i>

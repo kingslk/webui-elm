@@ -19,7 +19,7 @@
             >
           </div>
           <div class="cartcontrol-wrapper">
-            <cartcontrol :food="food" v-on:cart-add="addFood"></cartcontrol>
+            <cartcontrol :food="food" v-on:cartadd="addFood"></cartcontrol>
           </div>
           <transition name="fade">
             <div
@@ -35,6 +35,7 @@
     </div>
   </transition>
 </template>
+
 <script>
 import Vue from 'vue';
 import BScroll from 'better-scroll';
@@ -54,9 +55,10 @@ export default {
   methods: {
     show () {
       this.showFlag = true;
+
       this.$nextTick(() => {
         if (!this.scroll) {
-          this.BScroll = new BScroll(this.$refs.food, {
+          this.scroll = new BScroll(this.$refs.food, {
             click: true
           });
         } else {
@@ -67,17 +69,21 @@ export default {
     hide () {
       this.showFlag = false;
     },
-    addFirst () {
-      this.$emit('cart-add', event.target);
+    addFirst (event) {
+      this.$emit('cartadd', event.target);
       Vue.set(this.food, 'count', 1);
     },
-    addFood () {
-      this.$emit('cart-add', event.target);
+
+    addFood (target) {
+      this.$emit('cartadd', target);
     }
   }
 };
 </script>
-<style lang="stylus">
+
+<style lang="stylus" rel="stylesheet/stylus">
+@import '../../util/stylus/mixin.styl';
+
 .food {
   position: fixed;
   left: 0;
@@ -90,10 +96,9 @@ export default {
 
   &.move-enter-active, &.move-leave-active {
     transition: all 0.2s linear;
-    transform: translate3d(0, 0, 0);
   }
 
-  &.move-enter, &.move-leave-to {
+  &.move-enter, &.move-leave-active {
     transform: translate3d(100%, 0, 0);
   }
 
@@ -101,7 +106,6 @@ export default {
     position: relative;
     width: 100%;
     height: 0;
-    // 宽高相等的盒子
     padding-top: 100%;
 
     img {
@@ -127,8 +131,8 @@ export default {
   }
 
   .content {
-    padding: 18px;
     position: relative;
+    padding: 18px;
 
     .title {
       line-height: 14px;
@@ -141,8 +145,8 @@ export default {
     .detail {
       margin-bottom: 18px;
       line-height: 10px;
-      font-size: 0;
       height: 10px;
+      font-size: 0;
 
       .sell-count, .rating {
         font-size: 10px;
@@ -170,34 +174,36 @@ export default {
         color: rgb(147, 153, 159);
       }
     }
-  }
 
-  .cartcontrol-wrapper {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-  }
-
-  .buy {
-    position: absolute;
-    right: 18px;
-    bottom: 18px;
-    z-index: 10;
-    height: 24px;
-    line-height: 24px;
-    padding: 0 12px;
-    box-sizing: border-box;
-    border-radius: 12px;
-    font-size: 10px;
-    color: #fff;
-    background: rgb(0, 160, 220);
-
-    &.fade-enter-active, &.fade-leave-active {
-      transition: opacity 0.2s;
+    .cartcontrol-wrapper {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
     }
 
-    &.fade-enter, &.fade-leave-to {
-      opacity: 0;
+    .buy {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      z-index: 10;
+      height: 24px;
+      line-height: 24px;
+      padding: 0 12px;
+      box-sizing: border-box;
+      border-radius: 12px;
+      font-size: 10px;
+      color: #fff;
+      background: rgb(0, 160, 220);
+      opacity: 1;
+
+      &.fade-enter-active, &.fade-leave-active {
+        transition: all 0.2s;
+      }
+
+      &.fade-enter, &.fade-leave-active {
+        opacity: 0;
+        z-index: -1;
+      }
     }
   }
 }

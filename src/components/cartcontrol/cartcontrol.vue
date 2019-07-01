@@ -2,7 +2,7 @@
   <div class="cartcontrol">
     <transition name="move">
       <div
-        class="cart-decrease "
+        class="cart-decrease"
         v-show="food.count > 0"
         @click.stop.prevent="decreaseCart"
       >
@@ -13,7 +13,8 @@
     <div class="cart-add icon-add_circle" @click.stop.prevent="addCart"></div>
   </div>
 </template>
-<script>
+
+<script type="text/ecmascript-6">
 import Vue from 'vue';
 export default {
   props: {
@@ -24,13 +25,11 @@ export default {
   methods: {
     addCart () {
       if (!this.food.count) {
-        // 在food中添加了一个count
         Vue.set(this.food, 'count', 1);
       } else {
         this.food.count++;
       }
-      // 向上传递监听element
-      this.$emit('cart-add', event.target);
+      this.$emit('cartadd', event.target);
     },
     decreaseCart () {
       if (this.food.count) {
@@ -40,33 +39,31 @@ export default {
   }
 };
 </script>
-<style lang="stylus">
-// padding增加点击区域
+
+<style lang="stylus" rel="stylesheet/stylus">
 .cartcontrol {
   font-size: 0;
-  display: flex;
-  align-items: center;
 
-  // 减少图标动画
   .cart-decrease {
     display: inline-block;
     padding: 6px;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
 
     .inner {
       display: inline-block;
+      line-height: 24px;
       font-size: 24px;
       color: rgb(0, 160, 220);
-      transform: rotate(0);
       transition: all 0.4s linear;
+      transform: rotate(0);
     }
 
     &.move-enter-active, &.move-leave-active {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
       transition: all 0.4s linear;
     }
 
-    &.move-enter, &.move-leave-to {
+    &.move-enter, &.move-leave-active {
       opacity: 0;
       transform: translate3d(24px, 0, 0);
 
@@ -78,7 +75,10 @@ export default {
 
   .cart-count {
     display: inline-block;
+    vertical-align: top;
     width: 12px;
+    padding-top: 6px;
+    line-height: 24px;
     text-align: center;
     font-size: 10px;
     color: rgb(147, 153, 159);
@@ -87,6 +87,7 @@ export default {
   .cart-add {
     display: inline-block;
     padding: 6px;
+    line-height: 24px;
     font-size: 24px;
     color: rgb(0, 160, 220);
   }

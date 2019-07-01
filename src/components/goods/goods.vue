@@ -56,7 +56,7 @@
                   <!-- Vue2.0使用v-on代替$dispatch -->
                   <cartcontrol
                     :food="food"
-                    v-on:cart-add="cartAdd"
+                    v-on:cartadd="cartAdd"
                   ></cartcontrol>
                 </div>
               </div>
@@ -71,10 +71,10 @@
       :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice"
       :select-foods="selectFoods"
-      v-on:cart-add="cartAdd"
+      v-on:cartadd="cartAdd"
     ></shopcart>
     <!-- 食物详情覆盖层 -->
-    <food :food="selectedFood" ref="food" v-on:cart-add="cartAdd"></food>
+    <food :food="selectedFood" ref="food" v-on:cartadd="cartAdd"></food>
   </div>
 </template>
 <script type='text/ecmascript-6'>
@@ -147,9 +147,9 @@ export default {
     // 点击滚动
     selectMenu (index) {
       // vue2.0不需要判断是浏览器还是手机端
-      if (!event._constructed) {
-        return;
-      }
+      // if (!event._constructed) {
+      //   return;
+      // }
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(
         'food-list-hook'
       );
