@@ -57,6 +57,11 @@ export default {
       }
     }
   },
+  // data () {
+  //   return {
+  //     ratingss: this.ratings
+  //   };
+  // },
   computed: {
     positives () {
       return this.ratings.filter(rating => {
@@ -71,13 +76,11 @@ export default {
   },
   methods: {
     select (type) {
-      this.selectType = type;
       this.$nextTick(() => {
         this.$emit('select', type);
       });
     },
     toggleContent () {
-      this.onlyContent = !this.onlyContent;
       this.$emit('toggle');
     }
   }

@@ -95,6 +95,7 @@ import BScroll from 'better-scroll';
 import cartcontrol from '../cartcontrol/cartcontrol';
 import split from '../split/split';
 import ratingselect from '../ratingselect/ratingselect';
+import { formatDate } from '../../util/js/date';
 const ALL = 2;
 export default {
   props: {
@@ -167,7 +168,10 @@ export default {
     }
   },
   filters: {
-    formatDate (time) {}
+    formatDate (time) {
+      let date = new Date(time);
+      return formatDate(date, 'yyyy-MM-dd hh:mm');
+    }
   }
 };
 </script>
